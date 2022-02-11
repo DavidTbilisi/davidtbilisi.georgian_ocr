@@ -59,8 +59,8 @@ function convert(){
     {
       logger: m => {
         console.log(m)
-        progress.innerText = m.progress.toFixed(2) * 100) + "%"
-        show_text.innerText = m.progress.toFixed(2) * 100) + "%";
+        progress.innerText = m.progress.toFixed(2) * 100 + "%"
+        show_text.innerText = m.progress.toFixed(2) * 100 + "%";
       }
     }
   ).then(({data: {text}}) => {

@@ -25,6 +25,8 @@
     </select>
     <button class="uk-button uk-button-primary uk-width-1-4" id="convert">Convert</button>
     <br>
+      
+    <span class="show-progress"> </span>
     <img src="hoking.png"  alt="Image">
     <p class="ocr-text"></p>
 
@@ -37,6 +39,7 @@ let show_text = document.querySelector(".ocr-text");
 let btn = document.querySelector("#convert");
 let lang = document.querySelector("#language");
 let file = document.querySelector("#file");
+let progress = document.querySelector(".show-progress");
 
 file.addEventListener('change',function(e){
   
@@ -56,7 +59,8 @@ function convert(){
     {
       logger: m => {
         console.log(m)
-        show_text.innerText = Math.round(m.progress * 1000) / 100 + "%";
+        progress.innerText = m.progress.toFixed(2) * 100) + "%"
+        show_text.innerText = m.progress.toFixed(2) * 100) + "%";
       }
     }
   ).then(({data: {text}}) => {

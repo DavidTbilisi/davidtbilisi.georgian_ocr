@@ -73,6 +73,10 @@ let downloadBtn = document.querySelector("#download-btn");
 
 file.addEventListener('change',function(e){
   
+  // Hide action buttons when new file is selected
+  actionButtons.style.display = 'none';
+  show_text.innerText = '';
+  
   let r = new FileReader();
   r.readAsDataURL(file.files[0]);
 

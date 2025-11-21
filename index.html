@@ -45,6 +45,14 @@
     </div>
 
     <div>
+      <div id="action-buttons" style="display: none; margin-bottom: 15px;">
+        <button class="uk-button uk-button-secondary uk-margin-small-right" id="copy-btn">
+          <span uk-icon="copy"></span> Copy to Clipboard
+        </button>
+        <button class="uk-button uk-button-secondary" id="download-btn">
+          <span uk-icon="download"></span> Download Text
+        </button>
+      </div>
       <p class="ocr-text"></p>
     </div>
   </div>
@@ -59,8 +67,15 @@ let btn = document.querySelector("#convert");
 let lang = document.querySelector("#language");
 let file = document.querySelector("#file");
 let progress = document.querySelector(".show-progress");
+let actionButtons = document.querySelector("#action-buttons");
+let copyBtn = document.querySelector("#copy-btn");
+let downloadBtn = document.querySelector("#download-btn");
 
 file.addEventListener('change',function(e){
+  
+  // Hide action buttons when new file is selected
+  actionButtons.style.display = 'none';
+  show_text.innerText = '';
   
   let r = new FileReader();
   r.readAsDataURL(file.files[0]);
@@ -85,9 +100,68 @@ function convert(){
   ).then(({data: {text}}) => {
     console.log(text);
     show_text.innerText = text;
+    // Show action buttons when text is available
+    if (text && text.trim().length > 0) {
+      actionButtons.style.display = 'block';
+    }
   }).catch((err) => {
     console.log(err)
   })
+}
+
+// Copy to clipboard functionality
+copyBtn.onclick = function() {
+  const text = show_text.innerText;
+  if (text && text.trim().length > 0) {
+    navigator.clipboard.writeText(text).then(() => {
+      // Show success notification
+      UIkit.notification({
+        message: 'Text copied to clipboard!',
+        status: 'success',
+        pos: 'top-center',
+        timeout: 2000
+      });
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+      UIkit.notification({
+        message: 'Failed to copy text',
+        status: 'danger',
+        pos: 'top-center',
+        timeout: 2000
+      });
+    });
+  }
+}
+
+// Download text functionality
+downloadBtn.onclick = function() {
+  const text = show_text.innerText;
+  if (text && text.trim().length > 0) {
+    // Create a blob with the text content
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary link and trigger download
+    const a = document.createElement('a');
+    a.href = url;
+    // Generate filename with timestamp
+    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+    a.download = `georgian-ocr-${timestamp}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    // Show success notification
+    UIkit.notification({
+      message: 'Text file downloaded!',
+      status: 'success',
+      pos: 'top-center',
+      timeout: 2000
+    });
+  }
 }
 
 </script>

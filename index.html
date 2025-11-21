@@ -144,7 +144,9 @@ downloadBtn.onclick = function() {
     // Create a temporary link and trigger download
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'converted-text.txt';
+    // Generate filename with timestamp
+    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+    a.download = `georgian-ocr-${timestamp}.txt`;
     document.body.appendChild(a);
     a.click();
     
